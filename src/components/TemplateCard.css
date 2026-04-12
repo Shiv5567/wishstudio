@@ -1,0 +1,172 @@
+/* Template Card styles */
+.template-card {
+  display: block;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background: var(--surface-card);
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-base);
+  text-decoration: none;
+  color: inherit;
+}
+
+.template-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px);
+}
+
+/* Image */
+.template-card-image {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.template-card-compact .template-card-image {
+  aspect-ratio: 4 / 5;
+}
+
+.template-card-preview-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  text-align: center;
+  z-index: 1;
+}
+
+.template-card-emoji {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+}
+
+.template-card-overlay-title {
+  font-family: var(--font-display);
+  font-weight: var(--font-bold);
+  font-size: var(--text-base);
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Motion badge */
+.template-card-motion-badge {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border-radius: var(--radius-full);
+  color: white;
+  font-size: 10px;
+  font-weight: var(--font-semibold);
+  z-index: 2;
+}
+
+/* Badges */
+.template-card-badges {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  z-index: 2;
+}
+
+.template-card-badges .badge {
+  font-size: 10px;
+  padding: 2px 8px;
+}
+
+/* Quick actions */
+.template-card-actions {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all var(--transition-base);
+  z-index: 2;
+}
+
+.template-card:hover .template-card-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.template-card-action {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.template-card-action:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+.template-card-fav-active {
+  color: var(--color-secondary);
+}
+
+/* Info */
+.template-card-info {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.template-card-title {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--space-2);
+  color: var(--text-primary);
+}
+
+.template-card-meta {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.template-card-stat {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+/* Touch support — always show actions on mobile */
+@media (hover: none) {
+  .template-card-actions {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

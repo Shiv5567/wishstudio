@@ -1,0 +1,371 @@
+/* ── Text Style Presets ── Like Canva's one-click text styles */
+export const textStylePresets = [
+  {
+    id: 'heading-bold',
+    name: 'Bold Heading',
+    preview: 'Aa',
+    category: 'headings',
+    style: { fontSize: 56, fontFamily: 'Outfit', fontStyle: 'bold', fill: '#FFFFFF', shadowBlur: 8, shadowColor: 'rgba(0,0,0,0.5)', shadowOffsetX: 2, shadowOffsetY: 3, stroke: '', strokeWidth: 0, letterSpacing: 2 },
+  },
+  {
+    id: 'heading-elegant',
+    name: 'Elegant Serif',
+    preview: 'Ag',
+    category: 'headings',
+    style: { fontSize: 48, fontFamily: 'Georgia', fontStyle: 'italic', fill: '#FFD93D', shadowBlur: 6, shadowColor: 'rgba(0,0,0,0.4)', shadowOffsetX: 1, shadowOffsetY: 2, stroke: '', strokeWidth: 0, letterSpacing: 4 },
+  },
+  {
+    id: 'heading-neon',
+    name: 'Neon Glow',
+    preview: 'Ne',
+    category: 'headings',
+    style: { fontSize: 52, fontFamily: 'Outfit', fontStyle: 'bold', fill: '#00FF88', shadowBlur: 20, shadowColor: '#00FF88', shadowOffsetX: 0, shadowOffsetY: 0, stroke: '#00FF88', strokeWidth: 1, letterSpacing: 3 },
+  },
+  {
+    id: 'heading-fire',
+    name: 'Fire Title',
+    preview: '🔥',
+    category: 'headings',
+    style: { fontSize: 54, fontFamily: 'Impact', fontStyle: 'normal', fill: '#FF6B35', shadowBlur: 15, shadowColor: '#FF0000', shadowOffsetX: 0, shadowOffsetY: 3, stroke: '#FFD600', strokeWidth: 2, letterSpacing: 1 },
+  },
+  {
+    id: 'heading-gradient-pink',
+    name: 'Pink Dream',
+    preview: 'Pk',
+    category: 'headings',
+    style: { fontSize: 50, fontFamily: 'Outfit', fontStyle: 'bold', fill: '#EC4899', shadowBlur: 12, shadowColor: 'rgba(236, 72, 153, 0.5)', shadowOffsetX: 0, shadowOffsetY: 4, stroke: '', strokeWidth: 0, letterSpacing: 2 },
+  },
+  {
+    id: 'heading-ice',
+    name: 'Frozen Ice',
+    preview: '❄️',
+    category: 'headings',
+    style: { fontSize: 52, fontFamily: 'Outfit', fontStyle: 'bold', fill: '#A5F3FC', shadowBlur: 18, shadowColor: '#06B6D4', shadowOffsetX: 0, shadowOffsetY: 0, stroke: '#ECFEFF', strokeWidth: 1, letterSpacing: 3 },
+  },
+  {
+    id: 'sub-clean',
+    name: 'Clean Sub',
+    preview: 'Ab',
+    category: 'subtext',
+    style: { fontSize: 24, fontFamily: 'Inter', fontStyle: 'normal', fill: '#FFFFFF', shadowBlur: 0, shadowColor: '', shadowOffsetX: 0, shadowOffsetY: 0, stroke: '', strokeWidth: 0, letterSpacing: 0 },
+  },
+  {
+    id: 'sub-shadow',
+    name: 'Shadow Text',
+    preview: 'Sh',
+    category: 'subtext',
+    style: { fontSize: 28, fontFamily: 'Inter', fontStyle: 'normal', fill: '#FFFFFF', shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.6)', shadowOffsetX: 3, shadowOffsetY: 3, stroke: '', strokeWidth: 0, letterSpacing: 1 },
+  },
+  {
+    id: 'sub-outline',
+    name: 'Outline',
+    preview: 'Ol',
+    category: 'subtext',
+    style: { fontSize: 36, fontFamily: 'Outfit', fontStyle: 'bold', fill: 'transparent', shadowBlur: 0, shadowColor: '', shadowOffsetX: 0, shadowOffsetY: 0, stroke: '#FFFFFF', strokeWidth: 3, letterSpacing: 2 },
+  },
+  {
+    id: 'sub-retro',
+    name: 'Retro',
+    preview: 'Rt',
+    category: 'subtext',
+    style: { fontSize: 32, fontFamily: 'Courier New', fontStyle: 'bold', fill: '#FFD93D', shadowBlur: 0, shadowColor: '', shadowOffsetX: 3, shadowOffsetY: 3, stroke: '#C2410C', strokeWidth: 2, letterSpacing: 4 },
+  },
+  {
+    id: 'body-script',
+    name: 'Script',
+    preview: 'Sc',
+    category: 'body',
+    style: { fontSize: 30, fontFamily: 'Georgia', fontStyle: 'italic', fill: '#FBBF24', shadowBlur: 4, shadowColor: 'rgba(0,0,0,0.3)', shadowOffsetX: 1, shadowOffsetY: 1, stroke: '', strokeWidth: 0, letterSpacing: 1 },
+  },
+  {
+    id: 'body-minimal',
+    name: 'Minimal',
+    preview: 'Mn',
+    category: 'body',
+    style: { fontSize: 22, fontFamily: 'Inter', fontStyle: 'normal', fill: 'rgba(255,255,255,0.85)', shadowBlur: 0, shadowColor: '', shadowOffsetX: 0, shadowOffsetY: 0, stroke: '', strokeWidth: 0, letterSpacing: 0 },
+  },
+  {
+    id: 'body-gold',
+    name: 'Royal Gold',
+    preview: '👑',
+    category: 'body',
+    style: { fontSize: 34, fontFamily: 'Georgia', fontStyle: 'bold', fill: '#F59E0B', shadowBlur: 8, shadowColor: 'rgba(180, 83, 9, 0.6)', shadowOffsetX: 2, shadowOffsetY: 2, stroke: '#92400E', strokeWidth: 1, letterSpacing: 3 },
+  },
+  {
+    id: 'body-3d',
+    name: '3D Pop',
+    preview: '3D',
+    category: 'body',
+    style: { fontSize: 44, fontFamily: 'Impact', fontStyle: 'normal', fill: '#FFFFFF', shadowBlur: 0, shadowColor: '', shadowOffsetX: 4, shadowOffsetY: 4, stroke: '#6C3CE1', strokeWidth: 3, letterSpacing: 2 },
+  },
+  {
+    id: 'body-glitch',
+    name: 'Cyber',
+    preview: '⚡',
+    category: 'body',
+    style: { fontSize: 38, fontFamily: 'Courier New', fontStyle: 'bold', fill: '#0FF', shadowBlur: 12, shadowColor: '#F0F', shadowOffsetX: -2, shadowOffsetY: 0, stroke: '#0F0', strokeWidth: 1, letterSpacing: 5 },
+  },
+  {
+    id: 'body-stamp',
+    name: 'Stamp',
+    preview: '📮',
+    category: 'body',
+    style: { fontSize: 28, fontFamily: 'Impact', fontStyle: 'normal', fill: '#DC2626', shadowBlur: 0, shadowColor: '', shadowOffsetX: 0, shadowOffsetY: 0, stroke: '#DC2626', strokeWidth: 3, letterSpacing: 6 },
+  },
+];
+
+/* ── Shape Definitions ── */
+export const shapePresets = [
+  { id: 'rect', name: 'Rectangle', icon: '▬', type: 'rect', props: { width: 200, height: 120, fill: '#6C3CE1', cornerRadius: 0 } },
+  { id: 'rounded-rect', name: 'Rounded Rect', icon: '▢', type: 'rect', props: { width: 200, height: 120, fill: '#E84393', cornerRadius: 16 } },
+  { id: 'square', name: 'Square', icon: '■', type: 'rect', props: { width: 150, height: 150, fill: '#3B82F6', cornerRadius: 0 } },
+  { id: 'pill', name: 'Pill', icon: '💊', type: 'rect', props: { width: 240, height: 60, fill: '#10B981', cornerRadius: 30 } },
+  { id: 'circle', name: 'Circle', icon: '●', type: 'circle', props: { radius: 80, fill: '#F59E0B' } },
+  { id: 'ring', name: 'Ring', icon: '◯', type: 'circle', props: { radius: 80, fill: 'transparent', stroke: '#EC4899', strokeWidth: 6 } },
+  { id: 'line-h', name: 'Line H', icon: '━', type: 'line', props: { points: [0, 0, 300, 0], stroke: '#FFFFFF', strokeWidth: 4 } },
+  { id: 'line-v', name: 'Line V', icon: '┃', type: 'line', props: { points: [0, 0, 0, 300], stroke: '#FFFFFF', strokeWidth: 4 } },
+  { id: 'line-diag', name: 'Diagonal', icon: '╲', type: 'line', props: { points: [0, 0, 200, 200], stroke: '#FFFFFF', strokeWidth: 3 } },
+  { id: 'arrow', name: 'Arrow', icon: '→', type: 'arrow', props: { points: [0, 0, 200, 0], stroke: '#FFFFFF', strokeWidth: 4, fill: '#FFFFFF', pointerLength: 16, pointerWidth: 16 } },
+  { id: 'star-5', name: 'Star', icon: '★', type: 'star', props: { numPoints: 5, innerRadius: 40, outerRadius: 80, fill: '#FFD93D', stroke: '#F59E0B', strokeWidth: 2 } },
+  { id: 'star-6', name: '6-Star', icon: '✦', type: 'star', props: { numPoints: 6, innerRadius: 45, outerRadius: 85, fill: '#E84393', stroke: '', strokeWidth: 0 } },
+  { id: 'triangle', name: 'Triangle', icon: '▲', type: 'regularPolygon', props: { sides: 3, radius: 80, fill: '#3B82F6' } },
+  { id: 'pentagon', name: 'Pentagon', icon: '⬠', type: 'regularPolygon', props: { sides: 5, radius: 80, fill: '#8B5CF6' } },
+  { id: 'hexagon', name: 'Hexagon', icon: '⬡', type: 'regularPolygon', props: { sides: 6, radius: 80, fill: '#06B6D4' } },
+  { id: 'badge', name: 'Badge', icon: '🛡', type: 'star', props: { numPoints: 12, innerRadius: 60, outerRadius: 80, fill: '#6C3CE1', stroke: '#FFD93D', strokeWidth: 3 } },
+  { id: 'frame-thin', name: 'Thin Frame', icon: '□', type: 'rect', props: { width: 300, height: 300, fill: 'transparent', stroke: '#FFFFFF', strokeWidth: 3, cornerRadius: 0 } },
+  { id: 'frame-round', name: 'Round Frame', icon: '○', type: 'circle', props: { radius: 150, fill: 'transparent', stroke: '#FFD93D', strokeWidth: 4 } },
+];
+
+/* ── Particle Effect Presets ── */
+export const effectPresets = [
+  {
+    id: 'confetti',
+    name: 'Confetti',
+    icon: '🎊',
+    description: 'Festive confetti falling',
+    colors: ['#FF6B6B', '#FFD93D', '#51CF66', '#339AF0', '#CC5DE8', '#FF922B'],
+    particleCount: 40,
+    speed: 2,
+  },
+  {
+    id: 'hearts',
+    name: 'Floating Hearts',
+    icon: '💕',
+    description: 'Hearts rising up',
+    colors: ['#FF6B6B', '#EC4899', '#F43F5E', '#FB7185'],
+    particleCount: 20,
+    speed: 1.5,
+  },
+  {
+    id: 'sparkle',
+    name: 'Sparkle',
+    icon: '✨',
+    description: 'Twinkling sparkles',
+    colors: ['#FFD93D', '#FBBF24', '#FFFFFF', '#FEF3C7'],
+    particleCount: 30,
+    speed: 1,
+  },
+  {
+    id: 'snow',
+    name: 'Snowfall',
+    icon: '❄️',
+    description: 'Gentle snowfall',
+    colors: ['#FFFFFF', '#E0F2FE', '#BAE6FD', '#DBEAFE'],
+    particleCount: 35,
+    speed: 0.8,
+  },
+  {
+    id: 'firefly',
+    name: 'Fireflies',
+    icon: '🌟',
+    description: 'Glowing fireflies',
+    colors: ['#FFD93D', '#FDE68A', '#FEF3C7', '#FBBF24'],
+    particleCount: 15,
+    speed: 0.5,
+  },
+  {
+    id: 'bubbles',
+    name: 'Bubbles',
+    icon: '🫧',
+    description: 'Floating bubbles',
+    colors: ['rgba(99,179,237,0.4)', 'rgba(147,197,253,0.3)', 'rgba(191,219,254,0.5)', 'rgba(224,242,254,0.4)'],
+    particleCount: 18,
+    speed: 0.7,
+  },
+  {
+    id: 'rain',
+    name: 'Rain',
+    icon: '🌧️',
+    description: 'Gentle rainfall',
+    colors: ['rgba(147,197,253,0.6)', 'rgba(191,219,254,0.4)'],
+    particleCount: 50,
+    speed: 3,
+  },
+  {
+    id: 'petals',
+    name: 'Flower Petals',
+    icon: '🌸',
+    description: 'Falling flower petals',
+    colors: ['#FBCFE8', '#F9A8D4', '#F472B6', '#FDF2F8'],
+    particleCount: 20,
+    speed: 1,
+  },
+  {
+    id: 'embers',
+    name: 'Fire Embers',
+    icon: '🔥',
+    description: 'Rising glowing embers',
+    colors: ['#FF6B35', '#F59E0B', '#DC2626', '#FFD93D'],
+    particleCount: 25,
+    speed: 1.2,
+  },
+  {
+    id: 'stars',
+    name: 'Starfield',
+    icon: '⭐',
+    description: 'Twinkling stars',
+    colors: ['#FFFFFF', '#FDE68A', '#DBEAFE'],
+    particleCount: 40,
+    speed: 0.3,
+  },
+];
+
+/* ── Quick Template Layouts (for editor quick-start) ── */
+export const quickTemplates = [
+  {
+    id: 'qt-wish-01',
+    name: 'Festive Wish',
+    gradient: 'linear-gradient(135deg, #E53935 0%, #FFB300 100%)',
+    layers: [
+      { type: 'text', text: '🎆 Happy Dashain! 🎆', x: 120, y: 200, fontSize: 48, fill: '#FFFFFF', fontFamily: 'Outfit', fontStyle: 'bold', shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.5)' },
+      { type: 'text', text: 'Wishing you joy and prosperity', x: 120, y: 300, fontSize: 24, fill: 'rgba(255,255,255,0.9)', fontFamily: 'Inter', fontStyle: 'normal', shadowBlur: 4, shadowColor: 'rgba(0,0,0,0.3)' },
+    ],
+    effect: 'sparkle',
+  },
+  {
+    id: 'qt-birthday',
+    name: 'Birthday Party',
+    gradient: 'linear-gradient(135deg, #AB47BC 0%, #CE93D8 100%)',
+    layers: [
+      { type: 'text', text: '🎂 Happy Birthday! 🎈', x: 100, y: 180, fontSize: 52, fill: '#FFFFFF', fontFamily: 'Outfit', fontStyle: 'bold', shadowBlur: 12, shadowColor: 'rgba(0,0,0,0.4)' },
+      { type: 'text', text: 'Wishing you the happiest day!', x: 120, y: 290, fontSize: 22, fill: '#FDE68A', fontFamily: 'Inter', fontStyle: 'normal', shadowBlur: 3, shadowColor: 'rgba(0,0,0,0.3)' },
+    ],
+    effect: 'confetti',
+  },
+  {
+    id: 'qt-love',
+    name: 'Love Card',
+    gradient: 'linear-gradient(135deg, #EC407A 0%, #F48FB1 100%)',
+    layers: [
+      { type: 'text', text: 'I Love You ❤️', x: 200, y: 200, fontSize: 56, fill: '#FFFFFF', fontFamily: 'Georgia', fontStyle: 'italic', shadowBlur: 14, shadowColor: 'rgba(0,0,0,0.4)' },
+      { type: 'text', text: 'Forever and always', x: 250, y: 310, fontSize: 22, fill: 'rgba(255,255,255,0.85)', fontFamily: 'Inter', fontStyle: 'italic', shadowBlur: 4, shadowColor: 'rgba(0,0,0,0.3)' },
+    ],
+    effect: 'hearts',
+  },
+  {
+    id: 'qt-morning',
+    name: 'Good Morning',
+    gradient: 'linear-gradient(135deg, #FF6F00 0%, #FFD54F 100%)',
+    layers: [
+      { type: 'text', text: '☀️ Good Morning!', x: 150, y: 200, fontSize: 48, fill: '#FFFFFF', fontFamily: 'Outfit', fontStyle: 'bold', shadowBlur: 8, shadowColor: 'rgba(0,0,0,0.3)' },
+      { type: 'text', text: 'Have a beautiful day', x: 180, y: 300, fontSize: 24, fill: 'rgba(255,255,255,0.9)', fontFamily: 'Inter', fontStyle: 'normal', shadowBlur: 4, shadowColor: 'rgba(0,0,0,0.3)' },
+    ],
+    effect: 'sparkle',
+  },
+  {
+    id: 'qt-dark-motivate',
+    name: 'Motivational',
+    gradient: 'linear-gradient(135deg, #0F0A2C 0%, #6C3CE1 100%)',
+    layers: [
+      { type: 'text', text: 'NEVER GIVE UP', x: 150, y: 220, fontSize: 52, fill: '#FFFFFF', fontFamily: 'Impact', fontStyle: 'normal', shadowBlur: 0, shadowColor: '', stroke: '#6C3CE1', strokeWidth: 2, letterSpacing: 5 },
+      { type: 'text', text: 'The harder you work, the luckier you get', x: 100, y: 330, fontSize: 20, fill: 'rgba(255,255,255,0.7)', fontFamily: 'Inter', fontStyle: 'normal' },
+    ],
+    effect: 'firefly',
+  },
+  {
+    id: 'qt-tihar',
+    name: 'Tihar Lights',
+    gradient: 'linear-gradient(135deg, #FF6F00 0%, #E65100 100%)',
+    layers: [
+      { type: 'text', text: '🪔 Happy Tihar! 🪔', x: 130, y: 200, fontSize: 50, fill: '#FFD93D', fontFamily: 'Outfit', fontStyle: 'bold', shadowBlur: 12, shadowColor: 'rgba(255,107,0,0.7)' },
+      { type: 'text', text: 'Festival of Lights — Deepawali', x: 140, y: 300, fontSize: 22, fill: '#FDE68A', fontFamily: 'Inter', fontStyle: 'normal', shadowBlur: 4, shadowColor: 'rgba(0,0,0,0.3)' },
+    ],
+    effect: 'firefly',
+  },
+  {
+    id: 'qt-neon',
+    name: 'Neon Night',
+    gradient: 'linear-gradient(135deg, #0A0A1A 0%, #1A0A3A 100%)',
+    layers: [
+      { type: 'text', text: 'GLOW UP', x: 200, y: 220, fontSize: 60, fill: '#0FF', fontFamily: 'Outfit', fontStyle: 'bold', shadowBlur: 25, shadowColor: '#0FF', stroke: '#0FF', strokeWidth: 1 },
+    ],
+    effect: 'sparkle',
+  },
+  {
+    id: 'qt-minimal',
+    name: 'Minimal White',
+    gradient: 'linear-gradient(135deg, #FAFAFA 0%, #E5E5E5 100%)',
+    layers: [
+      { type: 'text', text: 'Less is More', x: 200, y: 240, fontSize: 42, fill: '#1A1A1A', fontFamily: 'Inter', fontStyle: 'normal', shadowBlur: 0 },
+    ],
+    effect: null,
+  },
+];
+
+/* ── Canvas Size Presets ── */
+export const canvasSizePresets = [
+  { id: 'square', name: 'Square', label: '1:1', w: 1080, h: 1080, icon: '◻️' },
+  { id: 'portrait', name: 'Portrait', label: '4:5', w: 1080, h: 1350, icon: '📱' },
+  { id: 'story', name: 'IG Story', label: '9:16', w: 1080, h: 1920, icon: '📲' },
+  { id: 'landscape', name: 'Landscape', label: '16:9', w: 1920, h: 1080, icon: '🖥️' },
+  { id: 'facebook', name: 'FB Cover', label: '1200×630', w: 1200, h: 630, icon: '📘' },
+  { id: 'twitter', name: 'Twitter', label: '1600×900', w: 1600, h: 900, icon: '🐦' },
+  { id: 'whatsapp', name: 'WhatsApp', label: '800×800', w: 800, h: 800, icon: '💬' },
+  { id: 'a4', name: 'A4 Print', label: 'A4', w: 2480, h: 3508, icon: '📄' },
+];
+
+/* ── Background Filter Presets ── */
+export const filterPresets = [
+  { id: 'none', name: 'None', filter: { blur: 0, brightness: 100, contrast: 100, saturate: 100, hueRotate: 0, sepia: 0, grayscale: 0 } },
+  { id: 'warm', name: 'Warm', filter: { blur: 0, brightness: 105, contrast: 105, saturate: 120, hueRotate: 10, sepia: 15, grayscale: 0 } },
+  { id: 'cool', name: 'Cool', filter: { blur: 0, brightness: 100, contrast: 110, saturate: 90, hueRotate: 200, sepia: 0, grayscale: 0 } },
+  { id: 'vintage', name: 'Vintage', filter: { blur: 0, brightness: 95, contrast: 90, saturate: 80, hueRotate: 15, sepia: 40, grayscale: 0 } },
+  { id: 'dramatic', name: 'Dramatic', filter: { blur: 0, brightness: 90, contrast: 140, saturate: 130, hueRotate: 0, sepia: 0, grayscale: 0 } },
+  { id: 'fade', name: 'Faded', filter: { blur: 0, brightness: 110, contrast: 80, saturate: 70, hueRotate: 0, sepia: 10, grayscale: 10 } },
+  { id: 'bw', name: 'B&W', filter: { blur: 0, brightness: 100, contrast: 110, saturate: 0, hueRotate: 0, sepia: 0, grayscale: 100 } },
+  { id: 'sepia', name: 'Sepia', filter: { blur: 0, brightness: 100, contrast: 100, saturate: 80, hueRotate: 0, sepia: 70, grayscale: 0 } },
+  { id: 'vivid', name: 'Vivid', filter: { blur: 0, brightness: 110, contrast: 120, saturate: 150, hueRotate: 0, sepia: 0, grayscale: 0 } },
+  { id: 'dreamy', name: 'Dreamy', filter: { blur: 2, brightness: 110, contrast: 90, saturate: 120, hueRotate: -10, sepia: 5, grayscale: 0 } },
+  { id: 'noir', name: 'Noir', filter: { blur: 0, brightness: 80, contrast: 150, saturate: 0, hueRotate: 0, sepia: 0, grayscale: 100 } },
+  { id: 'sunset', name: 'Sunset', filter: { blur: 0, brightness: 105, contrast: 110, saturate: 140, hueRotate: 340, sepia: 20, grayscale: 0 } },
+];
+
+/* ── Color Overlay Presets ── */
+export const overlayPresets = [
+  { id: 'none', name: 'None', color: '', opacity: 0 },
+  { id: 'dark', name: 'Dark', color: '#000000', opacity: 0.4 },
+  { id: 'light', name: 'Light', color: '#FFFFFF', opacity: 0.3 },
+  { id: 'warm-gold', name: 'Warm Gold', color: '#F59E0B', opacity: 0.2 },
+  { id: 'cool-blue', name: 'Cool Blue', color: '#3B82F6', opacity: 0.2 },
+  { id: 'rose', name: 'Rose', color: '#EC4899', opacity: 0.15 },
+  { id: 'purple-haze', name: 'Purple Haze', color: '#7C3AED', opacity: 0.2 },
+  { id: 'green-tint', name: 'Forest', color: '#10B981', opacity: 0.15 },
+  { id: 'fire', name: 'Fire', color: '#DC2626', opacity: 0.2 },
+  { id: 'midnight', name: 'Midnight', color: '#1E1B4B', opacity: 0.4 },
+];
+
+/* ── Text Animation Presets (CSS-driven, for preview) ── */
+export const textAnimations = [
+  { id: 'none', name: 'None', className: '' },
+  { id: 'fade-in', name: 'Fade In', className: 'anim-fade-in' },
+  { id: 'slide-up', name: 'Slide Up', className: 'anim-slide-up' },
+  { id: 'slide-down', name: 'Slide Down', className: 'anim-slide-down' },
+  { id: 'scale-in', name: 'Scale In', className: 'anim-scale-in' },
+  { id: 'bounce', name: 'Bounce', className: 'anim-bounce' },
+  { id: 'typewriter', name: 'Typewriter', className: 'anim-typewriter' },
+  { id: 'glow-pulse', name: 'Glow Pulse', className: 'anim-glow-pulse' },
+  { id: 'shake', name: 'Shake', className: 'anim-shake' },
+  { id: 'rotate-in', name: 'Rotate In', className: 'anim-rotate-in' },
+  { id: 'float', name: 'Float', className: 'anim-float' },
+  { id: 'wave', name: 'Wave', className: 'anim-wave' },
+];
