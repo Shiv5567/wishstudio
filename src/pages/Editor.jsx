@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
-  Stage, Layer, Rect, Text, Transformer, Circle, Star, Line, Arrow, RegularPolygon,
+  Stage, Layer, Rect, Text, TextPath, Transformer, Circle, Star, Line, Arrow, RegularPolygon,
 } from 'react-konva';
 import {
   ArrowLeft, Type, Sticker, Wand2, Layers, Download,
@@ -76,21 +76,56 @@ function renderLayer(layer, isSelected, onSelect, onChange) {
   const key = layer.id;
 
   if (layer.type === 'text') {
+    const isCurved = layer.curveRadius && Math.abs(layer.curveRadius) > 0;
+    let dataPath = '';
+    
+    if (isCurved) {
+      const r = Math.abs(layer.curveRadius);
+      const sweep = layer.curveRadius > 0 ? 1 : 0;
+      dataPath = `M -${r}, 0 A ${r} ${r} 0 0 ${sweep} ${r}, 0`;
+    }
+
+    const commonTextProps = {
+      text: layer.text, fontSize: layer.fontSize || 32, fontFamily: layer.fontFamily || 'Outfit',
+      fontStyle: layer.fontStyle || 'normal', align: layer.align || 'center',
+      shadowColor: layer.shadowColor || '', shadowBlur: layer.shadowBlur || 0,
+      shadowOffsetX: layer.shadowOffsetX || 0, shadowOffsetY: layer.shadowOffsetY || 0,
+      stroke: layer.stroke || '', strokeWidth: layer.strokeWidth || 0,
+      letterSpacing: layer.letterSpacing || 0, lineHeight: layer.lineHeight || 1.2,
+      globalCompositeOperation: layer.globalCompositeOperation || 'source-over',
+    };
+
+    if (layer.fillLinearGradientColorStops) {
+       commonTextProps.fillPriority = 'linear-gradient';
+       commonTextProps.fillLinearGradientStartPoint = { x: 0, y: 0 };
+       commonTextProps.fillLinearGradientEndPoint = { x: 0, y: layer.fontSize || 32 }; 
+       commonTextProps.fillLinearGradientColorStops = layer.fillLinearGradientColorStops;
+    } else {
+       commonTextProps.fill = layer.fill || '#FFFFFF';
+    }
+
+    const blocks = [];
+    if (layer.depth3d && layer.depth3d > 0) {
+       for(let i=layer.depth3d; i > 0; i--) {
+           blocks.push(
+               isCurved 
+               ? <TextPath key={`3d-${i}`} data={dataPath} x={layer.x + i} y={layer.y + i} {...commonTextProps} fill={layer.depthColor || '#000'} fillPriority="color" shadowBlur={0} />
+               : <Text key={`3d-${i}`} x={layer.x + i} y={layer.y + i} {...commonTextProps} fill={layer.depthColor || '#000'} fillPriority="color" shadowBlur={0} />
+           );
+       }
+    }
+
     return (
       <SelectableNode key={key} layer={layer} isSelected={isSelected} onSelect={onSelect} onChange={onChange}>
         {(props) => (
-          <Text {...props} x={layer.x} y={layer.y}
-            text={layer.text} fontSize={layer.fontSize || 32}
-            fontFamily={layer.fontFamily || 'Outfit'}
-            fontStyle={layer.fontStyle || 'normal'}
-            fill={layer.fill || '#FFFFFF'}
-            align={layer.align || 'center'}
-            shadowColor={layer.shadowColor || ''} shadowBlur={layer.shadowBlur || 0}
-            shadowOffsetX={layer.shadowOffsetX || 0} shadowOffsetY={layer.shadowOffsetY || 0}
-            stroke={layer.stroke || ''} strokeWidth={layer.strokeWidth || 0}
-            letterSpacing={layer.letterSpacing || 0}
-            lineHeight={layer.lineHeight || 1.2}
-          />
+          <React.Fragment>
+            {blocks}
+            {isCurved ? (
+              <TextPath {...props} x={layer.x} y={layer.y} data={dataPath} {...commonTextProps} />
+            ) : (
+              <Text {...props} x={layer.x} y={layer.y} {...commonTextProps} />
+            )}
+          </React.Fragment>
         )}
       </SelectableNode>
     );
@@ -627,127 +662,285 @@ function TemplatesPanel({ onApply }) {
   );
 }
 
-/* ── Text Panel ── Enhanced with bold/italic/spacing ────── */
+/* ── Text Panel ── Enhanced with Advanced Tabs ────── */
 function TextPanel({ selectedLayer, addText, updateLayer, commitUpdate }) {
   const isText = selectedLayer?.type === 'text';
   const fonts = ['Outfit', 'Inter', 'Georgia', 'Arial', 'Impact', 'Courier New', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Comic Sans MS'];
+  const [activeTab, setActiveTab] = React.useState('basic');
+
+  if (!isText) {
+    return (
+      <div className="editor-panel-content">
+        <h3 className="editor-panel-title">Add Text</h3>
+        <div className="editor-text-add-btns">
+          <button className="btn btn-primary btn-sm" onClick={() => addText({ fontSize: 48, fontStyle: 'bold' })} style={{ flex: 1, justifyContent: 'center' }}>
+            <Bold size={16} /> Heading
+          </button>
+          <button className="btn btn-secondary btn-sm" onClick={() => addText({ fontSize: 28, fontStyle: 'normal' })} style={{ flex: 1, justifyContent: 'center' }}>
+            <Type size={16} /> Subtext
+          </button>
+          <button className="btn btn-secondary btn-sm" onClick={() => addText({ fontSize: 18, fontStyle: 'normal' })} style={{ flex: 1, justifyContent: 'center' }}>
+            <AlignLeft size={16} /> Body
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="editor-panel-content">
-      <h3 className="editor-panel-title">Text</h3>
-      <div className="editor-text-add-btns">
-        <button className="btn btn-primary btn-sm" onClick={() => addText({ fontSize: 48, fontStyle: 'bold' })} style={{ flex: 1, justifyContent: 'center' }}>
-          <Bold size={16} /> Heading
-        </button>
-        <button className="btn btn-secondary btn-sm" onClick={() => addText({ fontSize: 28, fontStyle: 'normal' })} style={{ flex: 1, justifyContent: 'center' }}>
-          <Type size={16} /> Subtext
-        </button>
-        <button className="btn btn-secondary btn-sm" onClick={() => addText({ fontSize: 18, fontStyle: 'normal' })} style={{ flex: 1, justifyContent: 'center' }}>
-          <AlignLeft size={16} /> Body
-        </button>
+    <div className="editor-panel-content advanced-text-panel">
+      {/* Mobile-friendly horizontal scroll tabs */}
+      <div className="editor-subtabs scroll-x">
+        <button className={`subtab ${activeTab === 'basic' ? 'active' : ''}`} onClick={() => setActiveTab('basic')}>Basic</button>
+        <button className={`subtab ${activeTab === 'style' ? 'active' : ''}`} onClick={() => setActiveTab('style')}>Style</button>
+        <button className={`subtab ${activeTab === 'effects' ? 'active' : ''}`} onClick={() => setActiveTab('effects')}>Effects</button>
+        <button className={`subtab ${activeTab === 'curve' ? 'active' : ''}`} onClick={() => setActiveTab('curve')}>Curve</button>
+        <button className={`subtab ${activeTab === '3d' ? 'active' : ''}`} onClick={() => setActiveTab('3d')}>3D</button>
+        <button className={`subtab ${activeTab === 'advanced' ? 'active' : ''}`} onClick={() => setActiveTab('advanced')}>Extra</button>
       </div>
 
-      {isText && (
-        <div className="editor-controls">
-          <div className="input-group">
-            <label className="input-label">Content</label>
-            <textarea className="input textarea" value={selectedLayer.text} rows={3}
-              onChange={e => updateLayer(selectedLayer.id, { text: e.target.value })} onBlur={commitUpdate} />
-          </div>
-          <div className="input-group">
-            <label className="input-label">Font</label>
-            <select className="input select" value={selectedLayer.fontFamily || 'Outfit'}
-              onChange={(e) => { updateLayer(selectedLayer.id, { fontFamily: e.target.value }); commitUpdate(); }}>
-              {fonts.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
-            </select>
-          </div>
-          <div className="editor-row">
-            <div className="input-group" style={{ flex: 1 }}>
-              <label className="input-label">Size</label>
-              <input type="number" className="input input-sm" value={selectedLayer.fontSize || 32}
-                onChange={e => updateLayer(selectedLayer.id, { fontSize: parseInt(e.target.value) || 32 })} onBlur={commitUpdate} min={8} max={200} />
+      <div className="editor-tab-content">
+        {/* ================= BASIC TAB ================= */}
+        {activeTab === 'basic' && (
+          <div className="editor-controls">
+            <div className="input-group">
+              <label className="input-label">Content</label>
+              <textarea className="input textarea" value={selectedLayer.text} rows={2}
+                onChange={e => updateLayer(selectedLayer.id, { text: e.target.value })} onBlur={commitUpdate} />
             </div>
-            <div className="input-group" style={{ flex: 1 }}>
-              <label className="input-label">Color</label>
-              <input type="color" className="input-color" value={selectedLayer.fill || '#FFFFFF'}
-                onChange={e => { updateLayer(selectedLayer.id, { fill: e.target.value }); commitUpdate(); }} />
+            
+            <div className="input-group">
+              <label className="input-label">Font Family</label>
+              <select className="input select" value={selectedLayer.fontFamily || 'Outfit'}
+                onChange={(e) => { updateLayer(selectedLayer.id, { fontFamily: e.target.value }); commitUpdate(); }}>
+                {fonts.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
+              </select>
             </div>
-          </div>
-          {/* Bold / Italic / Align */}
-          <div className="editor-row">
-            <div className="editor-btn-group">
-              <button className={`editor-format-btn ${(selectedLayer.fontStyle || '').includes('bold') ? 'active' : ''}`}
-                onClick={() => { const cur = selectedLayer.fontStyle || ''; const next = cur.includes('bold') ? cur.replace('bold', '').trim() : `bold ${cur}`.trim(); updateLayer(selectedLayer.id, { fontStyle: next }); commitUpdate(); }}>
-                <Bold size={16} />
-              </button>
-              <button className={`editor-format-btn ${(selectedLayer.fontStyle || '').includes('italic') ? 'active' : ''}`}
-                onClick={() => { const cur = selectedLayer.fontStyle || ''; const next = cur.includes('italic') ? cur.replace('italic', '').trim() : `${cur} italic`.trim(); updateLayer(selectedLayer.id, { fontStyle: next }); commitUpdate(); }}>
-                <Italic size={16} />
-              </button>
+
+            <div className="editor-row">
+              <div className="input-group" style={{ flex: 1 }}>
+                <label className="input-label">Size — {selectedLayer.fontSize || 32}</label>
+                <input type="range" className="slider" value={selectedLayer.fontSize || 32} min={8} max={200}
+                  onChange={e => updateLayer(selectedLayer.id, { fontSize: parseInt(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
+              </div>
             </div>
-            <div className="editor-btn-group">
-              {[['left', AlignLeft], ['center', AlignCenter], ['right', AlignRight]].map(([a, Icon]) => (
-                <button key={a} className={`editor-format-btn ${selectedLayer.align === a ? 'active' : ''}`}
-                  onClick={() => { updateLayer(selectedLayer.id, { align: a }); commitUpdate(); }}>
-                  <Icon size={16} />
+
+            <div className="editor-row">
+              <div className="editor-btn-group" style={{ flex: 1 }}>
+                <button className={`editor-format-btn ${(selectedLayer.fontStyle || '').includes('bold') ? 'active' : ''}`}
+                  onClick={() => { const cur = selectedLayer.fontStyle || ''; const next = cur.includes('bold') ? cur.replace('bold', '').trim() : `bold ${cur}`.trim(); updateLayer(selectedLayer.id, { fontStyle: next }); commitUpdate(); }}>
+                  <Bold size={16} />
                 </button>
-              ))}
+                <button className={`editor-format-btn ${(selectedLayer.fontStyle || '').includes('italic') ? 'active' : ''}`}
+                  onClick={() => { const cur = selectedLayer.fontStyle || ''; const next = cur.includes('italic') ? cur.replace('italic', '').trim() : `${cur} italic`.trim(); updateLayer(selectedLayer.id, { fontStyle: next }); commitUpdate(); }}>
+                  <Italic size={16} />
+                </button>
+              </div>
+              <div className="editor-btn-group" style={{ flex: 1 }}>
+                {[['left', AlignLeft], ['center', AlignCenter], ['right', AlignRight]].map(([a, Icon]) => (
+                  <button key={a} className={`editor-format-btn ${selectedLayer.align === a ? 'active' : ''}`}
+                    onClick={() => { updateLayer(selectedLayer.id, { align: a }); commitUpdate(); }}>
+                    <Icon size={16} />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="editor-row">
+              <div className="input-group" style={{ flex: 1 }}>
+                <label className="input-label">Spacing — {selectedLayer.letterSpacing || 0}</label>
+                <input type="range" className="slider" value={selectedLayer.letterSpacing || 0} min={-5} max={50}
+                  onChange={e => updateLayer(selectedLayer.id, { letterSpacing: parseInt(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
+              </div>
+            </div>
+            <div className="editor-row">
+              <div className="input-group" style={{ flex: 1 }}>
+                <label className="input-label">Line Height — {selectedLayer.lineHeight || 1.2}</label>
+                <input type="range" className="slider" value={selectedLayer.lineHeight || 1.2} min={0.5} max={3} step={0.1}
+                  onChange={e => updateLayer(selectedLayer.id, { lineHeight: parseFloat(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
+              </div>
             </div>
           </div>
-          {/* Shadow */}
-          <div className="input-group">
-            <label className="input-label">Shadow Blur — {selectedLayer.shadowBlur || 0}</label>
-            <input type="range" min={0} max={30} value={selectedLayer.shadowBlur || 0}
-              onChange={e => updateLayer(selectedLayer.id, { shadowBlur: parseInt(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
-          </div>
-          <div className="editor-row">
-            <div className="input-group" style={{ flex: 1 }}>
-              <label className="input-label">Shadow Color</label>
-              <input type="color" className="input-color" value={selectedLayer.shadowColor || '#000000'}
-                onChange={e => { updateLayer(selectedLayer.id, { shadowColor: e.target.value }); commitUpdate(); }} />
+        )}
+
+        {/* ================= STYLE TAB ================= */}
+        {activeTab === 'style' && (
+          <div className="editor-controls">
+            <div className="input-group">
+              <label className="input-label">Fill Color (Solid)</label>
+              <input type="color" className="input-color-large" value={selectedLayer.fill || '#FFFFFF'}
+                onChange={e => { updateLayer(selectedLayer.id, { fill: e.target.value, fillLinearGradientColorStops: null }); commitUpdate(); }} />
             </div>
-            <div className="input-group" style={{ flex: 1 }}>
-              <label className="input-label">Shadow Y</label>
-              <input type="number" className="input input-sm" value={selectedLayer.shadowOffsetY || 0}
-                onChange={e => updateLayer(selectedLayer.id, { shadowOffsetY: parseInt(e.target.value) || 0 })} onBlur={commitUpdate} min={-20} max={20} />
+
+            <h4 className="section-divider">Gradient Fill (Overrides Solid)</h4>
+            <div className="editor-row">
+              <button className="btn btn-secondary btn-sm" onClick={() => { updateLayer(selectedLayer.id, { fillLinearGradientColorStops: [0, '#FF0000', 1, '#FFFF00'] }); commitUpdate(); }}>Sunset</button>
+              <button className="btn btn-secondary btn-sm" onClick={() => { updateLayer(selectedLayer.id, { fillLinearGradientColorStops: [0, '#00C9FF', 1, '#92FE9D'] }); commitUpdate(); }}>Ocean</button>
+              <button className="btn btn-secondary btn-sm" onClick={() => { updateLayer(selectedLayer.id, { fillLinearGradientColorStops: [0, '#f12711', 1, '#f5af19'] }); commitUpdate(); }}>Fire</button>
+              <button className="btn btn-ghost btn-sm" onClick={() => { updateLayer(selectedLayer.id, { fillLinearGradientColorStops: null }); commitUpdate(); }}>Clear</button>
             </div>
-          </div>
-          {/* Stroke */}
-          <div className="editor-row">
-            <div className="input-group" style={{ flex: 1 }}>
-              <label className="input-label">Stroke</label>
-              <input type="color" className="input-color" value={selectedLayer.stroke || '#000000'}
-                onChange={e => { updateLayer(selectedLayer.id, { stroke: e.target.value }); commitUpdate(); }} />
+
+            <h4 className="section-divider">Stroke / Outline</h4>
+            <div className="editor-row">
+              <div className="input-group" style={{ flex: 1 }}>
+                <label className="input-label">Color</label>
+                <input type="color" className="input-color-large" value={selectedLayer.stroke || '#000000'}
+                  onChange={e => { updateLayer(selectedLayer.id, { stroke: e.target.value }); commitUpdate(); }} />
+              </div>
+              <div className="input-group" style={{ flex: 1 }}>
+                <label className="input-label">Width — {selectedLayer.strokeWidth || 0}</label>
+                <input type="range" className="slider" value={selectedLayer.strokeWidth || 0} min={0} max={20}
+                  onChange={e => updateLayer(selectedLayer.id, { strokeWidth: parseInt(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
+              </div>
             </div>
-            <div className="input-group" style={{ flex: 1 }}>
-              <label className="input-label">Width</label>
-              <input type="number" className="input input-sm" value={selectedLayer.strokeWidth || 0}
-                onChange={e => updateLayer(selectedLayer.id, { strokeWidth: parseInt(e.target.value) || 0 })} onBlur={commitUpdate} min={0} max={10} />
-            </div>
-          </div>
-          {/* Spacing */}
-          <div className="editor-row">
-            <div className="input-group" style={{ flex: 1 }}>
-              <label className="input-label">Letter Spacing</label>
-              <input type="number" className="input input-sm" value={selectedLayer.letterSpacing || 0}
-                onChange={e => updateLayer(selectedLayer.id, { letterSpacing: parseInt(e.target.value) || 0 })} onBlur={commitUpdate} min={0} max={30} />
-            </div>
-            <div className="input-group" style={{ flex: 1 }}>
-              <label className="input-label">Opacity — {Math.round((selectedLayer.opacity || 1) * 100)}%</label>
-              <input type="range" min={0} max={1} step={0.05} value={selectedLayer.opacity || 1}
+
+            <h4 className="section-divider">Opacity</h4>
+            <div className="input-group">
+              <label className="input-label">Transparency — {Math.round((selectedLayer.opacity != null ? selectedLayer.opacity : 1) * 100)}%</label>
+              <input type="range" className="slider" min={0} max={1} step={0.05} value={selectedLayer.opacity != null ? selectedLayer.opacity : 1}
                 onChange={e => updateLayer(selectedLayer.id, { opacity: parseFloat(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
             </div>
           </div>
-          {/* Text Animation */}
-          <div className="input-group" style={{ marginTop: 'var(--space-2)' }}>
-            <label className="input-label">Animation</label>
-            <select className="input select" value={selectedLayer.animation || 'none'}
-              onChange={(e) => { updateLayer(selectedLayer.id, { animation: e.target.value }); commitUpdate(); }}>
-              {textAnimations.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-            </select>
+        )}
+
+        {/* ================= EFFECTS TAB ================= */}
+        {activeTab === 'effects' && (
+          <div className="editor-controls">
+            <h4 className="section-divider">Drop Shadow</h4>
+            <div className="input-group">
+               <label className="input-label">Color</label>
+               <input type="color" className="input-color-large" value={selectedLayer.shadowColor || '#000000'}
+                 onChange={e => { updateLayer(selectedLayer.id, { shadowColor: e.target.value }); commitUpdate(); }} />
+            </div>
+            <div className="editor-row">
+              <div className="input-group" style={{ flex: 1 }}>
+                <label className="input-label">Offset X</label>
+                <input type="range" className="slider" min={-50} max={50} value={selectedLayer.shadowOffsetX || 0}
+                  onChange={e => updateLayer(selectedLayer.id, { shadowOffsetX: parseInt(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
+              </div>
+              <div className="input-group" style={{ flex: 1 }}>
+                <label className="input-label">Offset Y</label>
+                <input type="range" className="slider" min={-50} max={50} value={selectedLayer.shadowOffsetY || 0}
+                  onChange={e => updateLayer(selectedLayer.id, { shadowOffsetY: parseInt(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
+              </div>
+            </div>
+            <div className="input-group">
+              <label className="input-label">Blur</label>
+              <input type="range" className="slider" min={0} max={50} value={selectedLayer.shadowBlur || 0}
+                onChange={e => updateLayer(selectedLayer.id, { shadowBlur: parseInt(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
+            </div>
+
+            <h4 className="section-divider">Glow Magic</h4>
+            <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}
+              onClick={() => {
+                updateLayer(selectedLayer.id, {
+                  shadowColor: selectedLayer.fill !== 'transparent' ? selectedLayer.fill : '#FFFFFF',
+                  shadowBlur: 20, shadowOffsetX: 0, shadowOffsetY: 0
+                });
+                commitUpdate();
+              }}>
+              <Sparkles size={16} style={{ marginRight: 8 }} /> Apply Neon Glow
+            </button>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* ================= CURVE TAB ================= */}
+        {activeTab === 'curve' && (
+          <div className="editor-controls">
+             <div className="empty-state" style={{ padding: 'var(--space-4)', textAlign: 'center' }}>
+                <RotateCcw size={32} style={{ margin: '0 auto var(--space-2)', color: 'var(--color-primary)' }} />
+                <h4 style={{ marginBottom: 'var(--space-2)' }}>Curved Text</h4>
+                <p style={{ fontSize: 'var(--text-sm)' }}>
+                  Bend your text into a circle or arch. 
+                </p>
+             </div>
+             
+             <div className="input-group">
+                <label className="input-label">Curve Radius — {selectedLayer.curveRadius || 0}</label>
+                <input type="range" className="slider" min={-300} max={300} value={selectedLayer.curveRadius || 0}
+                  onChange={e => updateLayer(selectedLayer.id, { curveRadius: parseInt(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
+                <small style={{ color: 'var(--text-tertiary)' }}>0 = Flat Text. Use +/- for arch direction.</small>
+             </div>
+          </div>
+        )}
+
+        {/* ================= 3D TAB ================= */}
+        {activeTab === '3d' && (
+          <div className="editor-controls">
+             <div className="empty-state" style={{ padding: 'var(--space-4)', textAlign: 'center' }}>
+                <h4 style={{ marginBottom: 'var(--space-2)' }}>3D Depth Effects</h4>
+                <p style={{ fontSize: 'var(--text-sm)', marginBottom: 'var(--space-4)' }}>
+                  Creates a hard block extrusion effect to simulate 3D typography.
+                </p>
+                <button className="btn btn-primary" onClick={() => {
+                  updateLayer(selectedLayer.id, {
+                    depth3d: 5 // Trigger for fake 3D shadows in renderLayer
+                  });
+                  commitUpdate();
+                }}>
+                  Enable 3D Block Text
+                </button>
+                <button className="btn btn-ghost" style={{ marginTop: 'var(--space-2)' }} onClick={() => {
+                  updateLayer(selectedLayer.id, { depth3d: 0 }); commitUpdate();
+                }}>
+                  Remove 3D
+                </button>
+             </div>
+
+             {selectedLayer.depth3d > 0 && (
+               <>
+                 <div className="input-group">
+                    <label className="input-label">Depth Intensity — {selectedLayer.depth3d || 5}</label>
+                    <input type="range" className="slider" min={1} max={30} value={selectedLayer.depth3d || 5}
+                      onChange={e => updateLayer(selectedLayer.id, { depth3d: parseInt(e.target.value) })} onMouseUp={commitUpdate} onTouchEnd={commitUpdate} />
+                 </div>
+                 <div className="input-group">
+                    <label className="input-label">3D Block Color</label>
+                    <input type="color" className="input-color-large" value={selectedLayer.depthColor || '#000000'}
+                      onChange={e => { updateLayer(selectedLayer.id, { depthColor: e.target.value }); commitUpdate(); }} />
+                 </div>
+               </>
+             )}
+          </div>
+        )}
+
+        {/* ================= ADVANCED TAB ================= */}
+        {activeTab === 'advanced' && (
+          <div className="editor-controls">
+             <div className="input-group">
+                <label className="input-label">Composite Mode (Glassmorphism / Blend)</label>
+                <select className="input select" value={selectedLayer.globalCompositeOperation || 'source-over'}
+                  onChange={e => { updateLayer(selectedLayer.id, { globalCompositeOperation: e.target.value }); commitUpdate(); }}>
+                  <option value="source-over">Normal</option>
+                  <option value="multiply">Multiply</option>
+                  <option value="screen">Screen</option>
+                  <option value="overlay">Overlay</option>
+                  <option value="luminosity">Luminosity</option>
+                </select>
+             </div>
+             
+             <div className="input-group">
+               <label className="input-label">Text Animation Plugin</label>
+               <select className="input select" value={selectedLayer.animation || 'none'}
+                 onChange={(e) => { updateLayer(selectedLayer.id, { animation: e.target.value }); commitUpdate(); }}>
+                 <option value="none">None</option>
+                 <option value="pulse">Pulse</option>
+                 <option value="float">Float</option>
+                 <option value="shimmer">Shimmer</option>
+               </select>
+             </div>
+
+             <div className="editor-row" style={{ marginTop: 'var(--space-6)' }}>
+                <button className="btn btn-secondary" style={{ flex: 1, justifyContent: 'center' }} onClick={() => {
+                  updateLayer(selectedLayer.id, { depth3d: undefined, curveRadius: undefined, fillLinearGradientColorStops: undefined, shadowBlur: 0, shadowOffsetX: 0, shadowOffsetY: 0, globalCompositeOperation: 'source-over' });
+                  commitUpdate();
+                }}>
+                  Reset Styles
+                </button>
+             </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
