@@ -26,6 +26,7 @@ const AdminCategories = lazy(() => import('./pages/admin/AdminCategories'));
 const AdminUploads = lazy(() => import('./pages/admin/AdminUploads'));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
 const AdminThemes = lazy(() => import('./pages/admin/AdminThemes'));
+const AdminStickers = lazy(() => import('./pages/admin/AdminStickers'));
 
 /* Loading fallback */
 function PageLoader() {
@@ -67,6 +68,7 @@ export default function App() {
             <Route path="categories" element={<AdminCategories />} />
             <Route path="uploads" element={<AdminUploads />} />
             <Route path="themes" element={<AdminThemes />} />
+            <Route path="stickers" element={<AdminStickers />} />
             <Route path="analytics" element={<AdminAnalytics />} />
           </Route>
 

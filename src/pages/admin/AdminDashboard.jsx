@@ -1,7 +1,7 @@
 /* Admin Dashboard — Overview */
 import React from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Image, FolderOpen, Upload, BarChart3, LogOut, Home, Settings, ChevronRight, Brush } from 'lucide-react';
+import { LayoutDashboard, Image, FolderOpen, Upload, BarChart3, LogOut, Home, Settings, ChevronRight, Brush, Sticker } from 'lucide-react';
 import { auth } from '../../services/firebase';
 import useAuthStore from '../../stores/authStore';
 import SEOHead from '../../components/SEOHead';
@@ -11,6 +11,7 @@ const navItems = [
   { path: '/admin', icon: LayoutDashboard, label: 'Overview', end: true },
   { path: '/admin/templates', icon: Image, label: 'Templates' },
   { path: '/admin/themes', icon: Brush, label: 'Themes' },
+  { path: '/admin/stickers', icon: Sticker, label: 'Stickers' },
   { path: '/admin/categories', icon: FolderOpen, label: 'Categories' },
   { path: '/admin/uploads', icon: Upload, label: 'Uploads' },
   { path: '/admin/analytics', icon: BarChart3, label: 'Analytics' },
@@ -100,6 +101,9 @@ export function AdminOverview() {
           </Link>
           <Link to="/admin/themes" className="admin-quick-action">
             <Brush size={20} /> Manage Themes <ChevronRight size={16} />
+          </Link>
+          <Link to="/admin/stickers" className="admin-quick-action">
+            <Sticker size={20} /> Sticker Manager <ChevronRight size={16} />
           </Link>
           <Link to="/admin/categories" className="admin-quick-action">
             <FolderOpen size={20} /> Manage Categories <ChevronRight size={16} />
