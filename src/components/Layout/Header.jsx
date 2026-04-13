@@ -5,13 +5,13 @@ import { Search, Sun, Moon, Heart, User, Menu, X, Plus, LayoutGrid } from 'lucid
 import useUIStore from '../../stores/uiStore';
 import useAuthStore from '../../stores/authStore';
 import './layout.css';
-
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, toggleTheme, searchQuery, setSearchQuery } = useUIStore();
   const { user } = useAuthStore();
   const [mobileSearch, setMobileSearch] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -48,7 +48,7 @@ export default function Header() {
         </form>
 
         {/* Desktop Nav */}
-        <nav className="header-nav hide-mobile" style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center' }}>
+        <nav className="header-nav hide-mobile" style={{ gap: 'var(--space-4)' }}>
           <Link to="/" className="header-nav-link">
             Home
           </Link>
@@ -75,6 +75,15 @@ export default function Header() {
             {mobileSearch ? <X size={20} /> : <Search size={20} />}
           </button>
 
+          {/* Mobile Menu Toggle */}
+          <button
+            className="btn btn-icon btn-ghost show-mobile"
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open Menu"
+          >
+            <Menu size={20} />
+          </button>
+
           {/* Theme Toggle */}
           <button className="btn btn-icon btn-ghost" onClick={toggleTheme} aria-label="Toggle theme">
             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
@@ -94,7 +103,7 @@ export default function Header() {
 
       {/* Mobile Search Expanded */}
       {mobileSearch && (
-        <form className="header-mobile-search" onSubmit={handleSearch}>
+        <form className="header-mobile-search show-mobile" onSubmit={handleSearch}>
           <Search size={18} className="header-search-icon" />
           <input
             type="text"
@@ -105,6 +114,41 @@ export default function Header() {
             autoFocus
           />
         </form>
+      )}
+
+      {/* Mobile Sidebar Menu */}
+      {mobileMenuOpen && (
+        <div className="mobile-menu-overlay show-mobile" onClick={() => setMobileMenuOpen(false)}>
+          <div className="mobile-menu-drawer" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-menu-header">
+              <span className="logo-text">Wish<span className="logo-accent">Studio</span></span>
+              <button className="btn btn-icon btn-ghost" onClick={() => setMobileMenuOpen(false)}>
+                <X size={24} />
+              </button>
+            </div>
+            <div className="mobile-menu-content">
+              <Link to="/" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+              <Link to="/explore" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Explore</Link>
+              <Link to="/upload" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Upload Template</Link>
+              <Link to="/favorites" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Saved</Link>
+              
+              <div className="divider"></div>
+              
+              <Link to="/about" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+              <Link to="/contact" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+              <Link to="/faq" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
+              
+              <div className="divider"></div>
+              
+              <Link to={user ? "/admin" : "/admin/login"} className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
+                Admin Dashboard
+              </Link>
+              <button className="btn btn-ghost" style={{ width: '100%', justifyContent: 'flex-start', padding: 'var(--space-3) var(--space-4)', marginTop: 'var(--space-2)' }} onClick={() => { toggleTheme(); setMobileMenuOpen(false); }}>
+                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />} Switch Theme
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </header>
   );
