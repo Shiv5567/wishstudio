@@ -64,19 +64,6 @@ export default function Home() {
             </button>
           </form>
 
-          {/* Quick Tags */}
-          <div className="hero-tags">
-            <span className="hero-tags-label">Popular:</span>
-            {['Dashain', 'Tihar', 'Birthday', 'Love', 'Good Morning'].map((tag) => (
-              <Link
-                key={tag}
-                to={`/explore?q=${encodeURIComponent(tag.toLowerCase())}`}
-                className="chip"
-              >
-                {tag}
-              </Link>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -95,9 +82,11 @@ export default function Home() {
               View All <ChevronRight size={16} />
             </Link>
           </div>
-          <div className="grid grid-auto-fill">
+          <div className="scroll-x">
             {featured.map((t) => (
-              <TemplateCard key={t.id} template={t} />
+              <div key={t.id} style={{ minWidth: 220, maxWidth: 280, flex: '0 0 auto' }}>
+                <TemplateCard template={t} />
+              </div>
             ))}
           </div>
         </div>
@@ -119,34 +108,18 @@ export default function Home() {
                 View All <ChevronRight size={16} />
               </Link>
             </div>
-            <div className="grid grid-auto-fill">
+            <div className="scroll-x">
               {trending.map((t) => (
-                <TemplateCard key={t.id} template={t} />
+                <div key={t.id} style={{ minWidth: 220, maxWidth: 280, flex: '0 0 auto' }}>
+                  <TemplateCard template={t} />
+                </div>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* ── Categories Grid ────────────────────────────── */}
-      <section className="section">
-        <div className="container">
-          <div className="section-header">
-            <div>
-              <h2 className="section-title">Browse by Occasion</h2>
-              <p className="section-subtitle">Find the perfect template for every celebration</p>
-            </div>
-            <Link to="/explore" className="section-link">
-              All Categories <ChevronRight size={16} />
-            </Link>
-          </div>
-          <div className="home-categories-grid">
-            {topCategories.map((cat) => (
-              <CategoryCard key={cat.id} category={cat} />
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* ── Recently Added ─────────────────────────────── */}
       <section className="section" style={{ background: 'var(--color-gray-100)', padding: 'var(--space-12) 0' }}>
@@ -163,9 +136,11 @@ export default function Home() {
               View All <ChevronRight size={16} />
             </Link>
           </div>
-          <div className="grid grid-auto-fill">
+          <div className="scroll-x">
             {newest.map((t) => (
-              <TemplateCard key={t.id} template={t} />
+              <div key={t.id} style={{ minWidth: 220, maxWidth: 280, flex: '0 0 auto' }}>
+                <TemplateCard template={t} />
+              </div>
             ))}
           </div>
         </div>
@@ -201,25 +176,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Popular in Nepal ───────────────────────────── */}
-      <section className="section" style={{ background: 'var(--color-gray-100)', padding: 'var(--space-12) 0' }}>
-        <div className="container">
-          <div className="section-header">
-            <div>
-              <h2 className="section-title">🇳🇵 Popular in Nepal</h2>
-              <p className="section-subtitle">Most downloaded templates by Nepali users</p>
-            </div>
-            <Link to="/explore?sort=popular" className="section-link">
-              View All <ChevronRight size={16} />
-            </Link>
-          </div>
-          <div className="grid grid-auto-fill">
-            {popular.map((t) => (
-              <TemplateCard key={t.id} template={t} />
-            ))}
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }

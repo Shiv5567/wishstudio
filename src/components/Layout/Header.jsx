@@ -1,7 +1,7 @@
 /* Header component — Sticky header with logo, search, navigation */
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Sun, Moon, Heart, User, Menu, X, Plus, LayoutGrid } from 'lucide-react';
+import { Search, Sun, Moon, Heart, User, Menu, X, Plus, Home, Compass, Upload, Info, Mail, HelpCircle, Settings } from 'lucide-react';
 import useUIStore from '../../stores/uiStore';
 import useAuthStore from '../../stores/authStore';
 import './layout.css';
@@ -127,24 +127,43 @@ export default function Header() {
               </button>
             </div>
             <div className="mobile-menu-content">
-              <Link to="/" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-              <Link to="/explore" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Explore</Link>
-              <Link to="/upload" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Upload Template</Link>
-              <Link to="/favorites" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Saved</Link>
+              <Link to="/" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
+                <Home size={18} /> Home
+              </Link>
+              <Link to="/explore" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
+                <Compass size={18} /> Explore
+              </Link>
+              <Link to="/upload" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
+                <Upload size={18} /> Upload Template
+              </Link>
+              <Link to="/favorites" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
+                <Heart size={18} /> Saved
+              </Link>
               
               <div className="divider"></div>
               
-              <Link to="/about" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
-              <Link to="/contact" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
-              <Link to="/faq" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
+              <Link to="/about" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
+                <Info size={18} /> About Us
+              </Link>
+              <Link to="/contact" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
+                <Mail size={18} /> Contact
+              </Link>
+              <Link to="/faq" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
+                <HelpCircle size={18} /> FAQ
+              </Link>
               
               <div className="divider"></div>
               
               <Link to={user ? "/admin" : "/admin/login"} className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
-                Admin Dashboard
+                <Settings size={18} /> Admin Dashboard
               </Link>
-              <button className="btn btn-ghost" style={{ width: '100%', justifyContent: 'flex-start', padding: 'var(--space-3) var(--space-4)', marginTop: 'var(--space-2)' }} onClick={() => { toggleTheme(); setMobileMenuOpen(false); }}>
-                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />} Switch Theme
+              
+              <button 
+                className="btn btn-ghost mobile-menu-link" 
+                style={{ width: '100%', justifyContent: 'flex-start' }} 
+                onClick={() => { toggleTheme(); setMobileMenuOpen(false); }}
+              >
+                {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />} Switch Theme
               </button>
             </div>
           </div>

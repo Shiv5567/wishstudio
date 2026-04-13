@@ -190,13 +190,16 @@
 }
 
 .mobile-menu-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
   font-weight: var(--font-medium);
   color: var(--text-primary);
   border-radius: var(--radius-lg);
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .mobile-menu-link:hover, .mobile-menu-link:active {
