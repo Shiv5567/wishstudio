@@ -48,13 +48,18 @@ export default function Header() {
         </form>
 
         {/* Desktop Nav */}
-        <nav className="header-nav hide-mobile">
+        <nav className="header-nav hide-mobile" style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center' }}>
+          <Link to="/" className="header-nav-link">
+            Home
+          </Link>
           <Link to="/explore" className="header-nav-link">
-            <LayoutGrid size={18} />
             Explore
           </Link>
+          <Link to="/upload" className="header-nav-link">
+            Upload
+          </Link>
           <Link to="/editor" className="header-nav-link header-nav-cta">
-            <Plus size={18} />
+            <Plus size={16} />
             Create
           </Link>
         </nav>

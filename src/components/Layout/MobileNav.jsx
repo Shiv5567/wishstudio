@@ -1,7 +1,7 @@
 /* Mobile bottom navigation */
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, LayoutGrid, PlusCircle, Heart, User } from 'lucide-react';
+import { Home, LayoutGrid, PlusCircle, Heart, UploadCloud } from 'lucide-react';
 import './layout.css';
 
 export default function MobileNav() {
@@ -31,9 +31,9 @@ export default function MobileNav() {
         <Heart size={22} />
         <span>Saved</span>
       </NavLink>
-      <NavLink to="/login" className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}>
-        <User size={22} />
-        <span>Profile</span>
+      <NavLink to="/upload" className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}>
+        <UploadCloud size={22} />
+        <span>Upload</span>
       </NavLink>
     </nav>
   );
