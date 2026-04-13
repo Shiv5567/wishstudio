@@ -1,7 +1,7 @@
 /* Admin Dashboard — Overview */
 import React from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Image, FolderOpen, Upload, BarChart3, LogOut, Home, Settings, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Image, FolderOpen, Upload, BarChart3, LogOut, Home, Settings, ChevronRight, Brush } from 'lucide-react';
 import { auth } from '../../services/firebase';
 import useAuthStore from '../../stores/authStore';
 import SEOHead from '../../components/SEOHead';
@@ -10,6 +10,7 @@ import '../AdminPages.css';
 const navItems = [
   { path: '/admin', icon: LayoutDashboard, label: 'Overview', end: true },
   { path: '/admin/templates', icon: Image, label: 'Templates' },
+  { path: '/admin/themes', icon: Brush, label: 'Themes' },
   { path: '/admin/categories', icon: FolderOpen, label: 'Categories' },
   { path: '/admin/uploads', icon: Upload, label: 'Uploads' },
   { path: '/admin/analytics', icon: BarChart3, label: 'Analytics' },
@@ -96,6 +97,9 @@ export function AdminOverview() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 'var(--space-3)' }}>
           <Link to="/admin/templates" className="admin-quick-action">
             <Image size={20} /> Manage Templates <ChevronRight size={16} />
+          </Link>
+          <Link to="/admin/themes" className="admin-quick-action">
+            <Brush size={20} /> Manage Themes <ChevronRight size={16} />
           </Link>
           <Link to="/admin/categories" className="admin-quick-action">
             <FolderOpen size={20} /> Manage Categories <ChevronRight size={16} />

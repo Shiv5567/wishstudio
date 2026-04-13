@@ -10,10 +10,11 @@ import {
   Unlock, MoveUp, MoveDown, EyeOff, Sparkles, Image as ImageIcon,
   Shapes, Palette, LayoutTemplate, Grid3X3, Film, SlidersHorizontal,
   Bold, Italic, AlignLeft, AlignCenter, AlignRight, RotateCcw,
-  ChevronDown, Play, Pause, RefreshCw,
+  ChevronDown, Play, Pause, RefreshCw, Upload,
 } from 'lucide-react';
 import useEditorStore from '../stores/editorStore';
 import useTemplateStore from '../stores/templateStore';
+import useThemeStore from '../stores/themeStore';
 import { stickerCategories } from '../data/sampleStickers';
 import {
   textStylePresets, shapePresets, effectPresets, quickTemplates,
@@ -156,6 +157,43 @@ function renderLayer(layer, isSelected, onSelect, onChange) {
     );
   }
 
+  if (layer.type === 'themeLayer') {
+    return (
+      <SelectableNode key={key} layer={layer} isSelected={isSelected} onSelect={onSelect} onChange={onChange}>
+        {(props, ref) => {
+          const [image, setImage] = React.useState(null);
+          React.useEffect(() => {
+            const img = new window.Image();
+            img.src = layer.url;
+            img.onload = () => setImage(img);
+          }, [layer.url]);
+
+          if (!image) return <Rect {...props} x={layer.x} y={layer.y} width={layer.width} height={layer.height} fill="#f0f0f0" opacity={0.5} />;
+
+          return (
+            <React.Fragment>
+              <Rect 
+                 {...props} 
+                 x={layer.x} y={layer.y} 
+                 width={layer.width} height={layer.height}
+                 fillPatternImage={image}
+                 fillPatternScaleX={layer.width / image.width}
+                 fillPatternScaleY={layer.height / image.height}
+                 opacity={layer.opacity != null ? layer.opacity : 1}
+                 shadowColor={layer.shadowColor || ''}
+                 shadowBlur={layer.shadowBlur || 0}
+                 shadowOffsetX={layer.shadowOffsetX || 0}
+                 shadowOffsetY={layer.shadowOffsetY || 0}
+                 globalCompositeOperation={layer.globalCompositeOperation || 'source-over'}
+                 cornerRadius={layer.cornerRadius || 0}
+              />
+            </React.Fragment>
+          );
+        }}
+      </SelectableNode>
+    );
+  }
+
   return null;
 }
 
@@ -217,15 +255,31 @@ export default function Editor() {
   const containerRef = useRef();
   const fileInputRef = useRef();
   const [stageSize, setStageSize] = useState({ width: 540, height: 540 });
-  const [activePanel, setActivePanel] = useState('templates');
+  const [activePanel, setActivePanel] = useState('themes');
   const [previewMode, setPreviewMode] = useState(false);
   const [showExport, setShowExport] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [playEffects, setPlayEffects] = useState(true);
+  
+  /* User Custom Themes */
+  const [userThemes, setUserThemes] = useState(() => {
+    try {
+      return JSON.parse(sessionStorage.getItem('ws-user-themes') || '[]');
+    } catch { return []; }
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('ws-user-themes', JSON.stringify(userThemes));
+  }, [userThemes]);
 
   const store = useEditorStore();
   const { getBySlug } = useTemplateStore();
+  const themeStore = useThemeStore();
+
+  useEffect(() => {
+    themeStore.fetchThemes();
+  }, []);
 
   /* Load template if specified */
   useEffect(() => {
@@ -320,6 +374,59 @@ export default function Editor() {
 
   const addSticker = (emoji) => {
     store.addLayer({ type: 'sticker', emoji, x: stageSize.width / 2 - 32, y: stageSize.height / 2 - 32, fontSize: 64 });
+  };
+
+  const addTheme = (theme) => {
+    const existingThemes = store.layers.filter(l => l.type === 'themeLayer').length;
+    
+    // Progressive sizing logic
+    let width = stageSize.width;
+    let height = stageSize.height;
+    
+    if (existingThemes === 1) {
+      width *= 0.8;
+      height *= 0.8;
+    } else if (existingThemes === 2) {
+      width *= 0.6;
+      height *= 0.6;
+    } else if (existingThemes >= 3) {
+      width *= 0.4;
+      height *= 0.4;
+    }
+
+    store.addLayer({
+      type: 'themeLayer',
+      url: theme.preview_image,
+      name: theme.name,
+      x: (stageSize.width - width) / 2,
+      y: (stageSize.height - height) / 2,
+      width,
+      height,
+      opacity: 1,
+      rotation: 0,
+      globalCompositeOperation: 'source-over',
+      shadowBlur: 0,
+      shadowColor: '#000000',
+    });
+    setActivePanel('layers');
+  };
+
+  const onUserThemeUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const newTheme = {
+        id: `user-theme-${Date.now()}`,
+        name: file.name.split('.')[0] || 'My Upload',
+        category: 'uploads',
+        preview_image: reader.result,
+        is_user: true
+      };
+      setUserThemes(prev => [newTheme, ...prev]);
+      addTheme(newTheme);
+    };
+    reader.readAsDataURL(file);
   };
 
   const applyQuickTemplate = (qt) => {
@@ -457,7 +564,7 @@ export default function Editor() {
 
   /* ── Toolbar items ── */
   const toolbarItems = [
-    { id: 'templates', icon: LayoutTemplate, label: 'Templates' },
+    { id: 'themes', icon: Palette, label: 'Themes' },
     { id: 'text', icon: Type, label: 'Text' },
     { id: 'styles', icon: Palette, label: 'Styles' },
     { id: 'shapes', icon: Shapes, label: 'Shapes' },
@@ -524,7 +631,14 @@ export default function Editor() {
         {/* ── Side Panel ── */}
         {!previewMode && activePanel && (
           <div className="editor-panel">
-            {activePanel === 'templates' && <TemplatesPanel onApply={applyQuickTemplate} />}
+            {activePanel === 'themes' && (
+              <ThemesPanel 
+                onAdd={addTheme} 
+                themes={[...userThemes, ...themeStore.themes]} 
+                categories={[{ id: 'uploads', name: '📁 My Uploads' }, ...themeStore.categories]}
+                onUpload={onUserThemeUpload}
+              />
+            )}
             {activePanel === 'text' && <TextPanel selectedLayer={selectedLayer} addText={addText} updateLayer={store.updateLayer} commitUpdate={store.commitLayerUpdate} />}
             {activePanel === 'styles' && <StylesPanel onApply={applyTextStyle} selectedLayer={selectedLayer} />}
             {activePanel === 'shapes' && <ShapesPanel onAdd={addShape} selectedLayer={selectedLayer} updateLayer={store.updateLayer} commitUpdate={store.commitLayerUpdate} />}
@@ -532,7 +646,7 @@ export default function Editor() {
             {activePanel === 'image' && <ImagePanel background={store.background} setBackground={store.setBackground} onUpload={() => fileInputRef.current?.click()} canvasPreset={store.canvasPreset} setCanvasPreset={store.setCanvasPreset} />}
             {activePanel === 'effects' && <EffectsPanel activeEffect={store.activeEffect} setActiveEffect={store.setActiveEffect} overlay={store.overlay} setOverlay={store.setOverlay} />}
             {activePanel === 'filters' && <FiltersPanel bgFilter={store.bgFilter} setBgFilter={store.setBgFilter} resetBgFilter={store.resetBgFilter} />}
-            {activePanel === 'layers' && <LayersPanelUI layers={store.layers} selectedId={store.selectedLayerId} onSelect={store.selectLayer} onRemove={store.removeLayer} onDuplicate={store.duplicateLayer} onToggleVisibility={store.toggleLayerVisibility} onToggleLock={store.toggleLayerLock} onMove={store.moveLayer} />}
+            {activePanel === 'layers' && <LayersPanelUI layers={store.layers} selectedId={store.selectedLayerId} onSelect={store.selectLayer} onRemove={store.removeLayer} onDuplicate={store.duplicateLayer} onToggleVisibility={store.toggleLayerVisibility} onToggleLock={store.toggleLayerLock} onMove={store.moveLayer} updateLayer={store.updateLayer} commitUpdate={store.commitLayerUpdate} />}
           </div>
         )}
 
@@ -642,22 +756,61 @@ export default function Editor() {
   );
 }
 
-/* ── Templates Panel ── Quick-start layouts like Canva ──── */
-function TemplatesPanel({ onApply }) {
+/* ── Themes Panel ── Advanced multi-layer theme system ──── */
+function ThemesPanel({ onAdd, themes, categories, onUpload }) {
+  const [activeCat, setActiveCat] = useState('all');
+  const userFileInputRef = useRef();
+
+  const filteredThemes = activeCat === 'all' 
+    ? themes 
+    : themes.filter(t => t.category === activeCat);
+
   return (
     <div className="editor-panel-content">
-      <h3 className="editor-panel-title">Quick Templates</h3>
-      <p className="editor-panel-desc">Start with a pre-designed template</p>
-      <div className="template-preset-grid">
-        {quickTemplates.map(qt => (
-          <button key={qt.id} className="template-preset-card" onClick={() => onApply(qt)}>
-            <div className="template-preset-preview" style={{ background: qt.gradient }}>
-              <span style={{ fontSize: 12, color: 'white', textShadow: '0 1px 4px rgba(0,0,0,0.4)', fontWeight: 600, fontFamily: 'var(--font-display)' }}>{qt.name}</span>
-            </div>
-            <span className="template-preset-name">{qt.name}</span>
+      <h3 className="editor-panel-title">Themes</h3>
+      <p className="editor-panel-desc">Add multiple themes as layers to your canvas.</p>
+      
+      {/* Category Filter */}
+      <div className="scroll-x" style={{ marginBottom: 'var(--space-4)', gap: 'var(--space-2)' }}>
+        {categories.map(c => (
+          <button
+            key={c.id}
+            className={`subtab ${activeCat === c.id ? 'active' : ''}`}
+            onClick={() => setActiveCat(c.id)}
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            {c.name}
           </button>
         ))}
       </div>
+
+      <div className="template-preset-grid">
+        {/* User Upload Button Card */}
+        <div className="template-preset-card upload-theme-card" onClick={() => userFileInputRef.current?.click()}>
+           <div className="template-preset-preview upload-theme-placeholder">
+              <Upload size={24} />
+              <span style={{ fontSize: '10px', marginTop: '4px' }}>Upload Image</span>
+           </div>
+           <span className="template-preset-name">Custom Theme</span>
+           <input ref={userFileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={onUpload} />
+        </div>
+
+        {filteredThemes.map(theme => (
+          <button key={theme.id} className="template-preset-card" onClick={() => onAdd(theme)}>
+            <div className="template-preset-preview">
+              <img src={theme.preview_image} alt={theme.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              {theme.is_featured && <span className="badge-featured">PRO</span>}
+            </div>
+            <span className="template-preset-name">{theme.name}</span>
+          </button>
+        ))}
+      </div>
+      
+      {filteredThemes.length === 0 && (
+         <div className="empty-state" style={{ padding: 'var(--space-8) 0' }}>
+            <p className="text-tertiary">No themes found in this category.</p>
+         </div>
+      )}
     </div>
   );
 }
@@ -1205,19 +1358,31 @@ function FiltersPanel({ bgFilter, setBgFilter, resetBgFilter }) {
 }
 
 /* ── Layers Panel ── ─────────────────────────────────────── */
-function LayersPanelUI({ layers, selectedId, onSelect, onRemove, onDuplicate, onToggleVisibility, onToggleLock, onMove }) {
+function LayersPanelUI({ 
+  layers, selectedId, onSelect, onRemove, onDuplicate, 
+  onToggleVisibility, onToggleLock, onMove, updateLayer, commitUpdate 
+}) {
   const getLayerLabel = (layer) => {
     if (layer.type === 'text') return layer.text?.slice(0, 18) || 'Text';
     if (layer.type === 'sticker') return layer.emoji;
     if (layer.type === 'shape') return layer.shapeType || 'Shape';
+    if (layer.type === 'themeLayer') return layer.name || 'Theme Layer';
     return '?';
   };
   const getLayerIcon = (layer) => {
     if (layer.type === 'text') return 'Aa';
     if (layer.type === 'sticker') return layer.emoji;
     if (layer.type === 'shape') return '◆';
+    if (layer.type === 'themeLayer') return '🖼️';
     return '?';
   };
+
+  const selectedLayer = layers.find(l => l.id === selectedId);
+  const isTheme = selectedLayer?.type === 'themeLayer';
+
+  const blendModes = [
+    'source-over', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light', 'soft-light', 'difference', 'exclusion'
+  ];
 
   return (
     <div className="editor-panel-content">
@@ -1239,6 +1404,57 @@ function LayersPanelUI({ layers, selectedId, onSelect, onRemove, onDuplicate, on
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Theme Layer Properties */}
+      {isTheme && (
+        <div className="editor-controls" style={{ borderTop: '1px solid var(--color-gray-200)', marginTop: 'var(--space-6)', paddingTop: 'var(--space-4)' }}>
+          <h4 className="section-divider" style={{ marginTop: 0 }}>Theme Styles</h4>
+          
+          <div className="input-group">
+            <label className="input-label">Opacity — {Math.round((selectedLayer.opacity || 1) * 100)}%</label>
+            <input type="range" className="slider" min={0} max={1} step={0.05} value={selectedLayer.opacity || 1}
+              onChange={e => {
+                updateLayer(selectedLayer.id, { opacity: parseFloat(e.target.value) });
+                commitUpdate();
+              }} 
+            />
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Blend Mode</label>
+            <select 
+              className="input-field" 
+              value={selectedLayer.globalCompositeOperation || 'source-over'}
+              onChange={e => {
+                 updateLayer(selectedLayer.id, { globalCompositeOperation: e.target.value });
+                 commitUpdate();
+              }}
+            >
+              {blendModes.map(m => <option key={m} value={m}>{m.replace('-', ' ')}</option>)}
+            </select>
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Shadow Blur</label>
+            <input type="range" className="slider" min={0} max={50} value={selectedLayer.shadowBlur || 0}
+              onChange={e => {
+                updateLayer(selectedLayer.id, { shadowBlur: parseInt(e.target.value) });
+                commitUpdate();
+              }}
+            />
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Corner Radius</label>
+            <input type="range" className="slider" min={0} max={100} value={selectedLayer.cornerRadius || 0}
+              onChange={e => {
+                updateLayer(selectedLayer.id, { cornerRadius: parseInt(e.target.value) });
+                commitUpdate();
+              }}
+            />
+          </div>
         </div>
       )}
     </div>

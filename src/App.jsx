@@ -25,6 +25,7 @@ const AdminTemplates = lazy(() => import('./pages/admin/AdminTemplates'));
 const AdminCategories = lazy(() => import('./pages/admin/AdminCategories'));
 const AdminUploads = lazy(() => import('./pages/admin/AdminUploads'));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
+const AdminThemes = lazy(() => import('./pages/admin/AdminThemes'));
 
 /* Loading fallback */
 function PageLoader() {
@@ -65,6 +66,7 @@ export default function App() {
             <Route path="templates" element={<AdminTemplates />} />
             <Route path="categories" element={<AdminCategories />} />
             <Route path="uploads" element={<AdminUploads />} />
+            <Route path="themes" element={<AdminThemes />} />
             <Route path="analytics" element={<AdminAnalytics />} />
           </Route>
 
