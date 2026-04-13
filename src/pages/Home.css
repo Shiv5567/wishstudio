@@ -3,7 +3,7 @@
 /* ── Hero ──────────────────────────────────────────────────── */
 .hero {
   position: relative;
-  padding: var(--space-16) 0 var(--space-12);
+  padding: var(--space-8) 0 var(--space-6);
   overflow: hidden;
   background: var(--gradient-hero);
   color: white;

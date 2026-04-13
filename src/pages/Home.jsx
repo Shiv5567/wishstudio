@@ -46,18 +46,8 @@ export default function Home() {
           <div className="hero-orb hero-orb-3" />
         </div>
         <div className="container hero-content">
-          <div className="hero-badge animate-scale-in">
-            <Sparkles size={14} />
-            Nepal's #1 Greeting Template Creator
-          </div>
-          <h1 className="hero-title">
-            Create Beautiful <span className="text-gradient">Wish Templates</span> for Every Occasion
-          </h1>
-          <p className="hero-subtitle">
-            Browse stunning templates, customize with your message, and share wishes for
-            Dashain, Tihar, birthdays, love, and 30+ special occasions.
-          </p>
-
+          {/* Hero text removed for mobile-focused layout */}
+          
           {/* Search Bar */}
           <form className="hero-search" onSubmit={handleSearch}>
             <Search size={20} className="hero-search-icon" />
@@ -129,11 +119,9 @@ export default function Home() {
                 View All <ChevronRight size={16} />
               </Link>
             </div>
-            <div className="scroll-x">
+            <div className="grid grid-auto-fill">
               {trending.map((t) => (
-                <div key={t.id} style={{ minWidth: 260, maxWidth: 300 }}>
-                  <TemplateCard template={t} />
-                </div>
+                <TemplateCard key={t.id} template={t} />
               ))}
             </div>
           </div>
