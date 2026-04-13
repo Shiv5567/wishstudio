@@ -24,6 +24,10 @@ export default function AdminTemplates() {
   }, []);
 
   const handleDelete = async (id) => {
+    if (id.startsWith('tpl-')) {
+      alert("This is a built-in static dummy template. It doesn't exist in the remote database so it cannot be deleted here.");
+      return;
+    }
     if (!window.confirm("Are you sure you want to delete this specific template from Firebase?")) return;
     try {
       await deleteDoc(doc(db, 'templates', id));
@@ -60,6 +64,11 @@ export default function AdminTemplates() {
   const handleSave = async () => {
     if (!editTemplateId) {
       alert("Currently only EDIT is supported here. Use 'Upload Assets' to create new templates.");
+      return;
+    }
+
+    if (editTemplateId.startsWith('tpl-')) {
+      alert("This is a built-in static dummy template. It doesn't exist in the remote database so it cannot be updated. Please edit a real uploaded template.");
       return;
     }
     
